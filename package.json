@@ -1,0 +1,14 @@
+{
+  "name": "blog-system",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "dependencies": {
+    "marked": "^17.0.0",
+    "marked-alert": "^2.1.0",
+    "fuse.js": "^7.1.0"
+  }
+}
