@@ -291,6 +291,12 @@ I looked at a few options before extracting this. Most blog engines want to own 
 
 If that's what you need, this might save you some time. If you want a full static site generator or a CMS, this isn't that.
 
+## Support
+
+My co-author charges by the token. If this library saved you some time, consider helping offset the cost of keeping us both productive.
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/atsepkov)
+
 ## License
 
 MIT
