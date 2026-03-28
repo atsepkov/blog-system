@@ -46,8 +46,8 @@ export function createBlog(config) {
         const entry = await resolveBlogEntryForPost(contentDir, fullPost)
         if (!entry) continue
         const entryBaseUrl = `${baseUrl}/${entry.year}/${entry.dirName}`
-        const { content } = await parseBlogPost(entry.indexPath, entryBaseUrl)
-        postContents.push({ slug: post.slug, content })
+        const { content, paywallContent } = await parseBlogPost(entry.indexPath, entryBaseUrl, baseUrl)
+        postContents.push({ slug: post.slug, content: content + (paywallContent || '') })
       } catch {
         // Skip posts that can't be loaded
       }
@@ -73,12 +73,14 @@ export function createBlog(config) {
     if (!entry) return { ...post, content: null, tags: database.getTagsForPost(post.id), backlinks: backlinks.get(slug) }
 
     const entryBaseUrl = `${baseUrl}/${entry.year}/${entry.dirName}`
-    const { content } = await parseBlogPost(entry.indexPath, entryBaseUrl)
+    const { content, paywallContent, paywallTier } = await parseBlogPost(entry.indexPath, entryBaseUrl, baseUrl)
     const tags = database.getTagsForPost(post.id)
 
     return {
       ...post,
       content,
+      paywallContent,
+      paywallTier,
       tags,
       backlinks: backlinks.get(slug),
     }
@@ -123,8 +125,14 @@ export function createBlog(config) {
     return renderMeta(meta)
   }
 
-  function buildSitemap(extraEntries = []) {
-    const { items } = database.listPosts({ limit: 10000 })
+  function buildSitemap(extraEntries = [], filterFn) {
+    let { items } = database.listPosts({ limit: 10000 })
+    if (filterFn) {
+      items = items.map(item => ({
+        ...item,
+        tags: database.getTagsForPost(item.id),
+      })).filter(filterFn)
+    }
     return buildSitemapXml(items, siteUrl, baseUrl, extraEntries)
   }
 
